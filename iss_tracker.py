@@ -80,6 +80,11 @@ def get_All_Data() -> dict:
     Returns:
         data (dict): python dictionary of all Epochs & the associated data.
     """
+    try:    
+        global data
+        return data
+    except NameError:
+        return 'Data is missing. Please re-post the data with the post-data route.\n'
     return data
 
 @app.route('/epochs', methods = ['GET'])
@@ -133,6 +138,7 @@ def get_Epoch_Entry(epoch) -> dict:
     Returns:
         data (dict): returns a dictionary that holds the data from the specific epoch identified earlier.
     """
+
     try:
         epoch = int(epoch)
     except ValueError:
@@ -244,9 +250,13 @@ def delete_nasa_data() -> str:
     """
     global data
     global all_data
-
-    data = {}
-    all_data = {}
+    
+    try:
+        del data
+        del all_data
+    except NameError:
+        data_update = 'Data has already been deleted. Please re-post it before attempting to delete again.\n'
+        return data_update
 
     data_update = 'Data has been deleted.\n'
     return data_update
@@ -267,9 +277,10 @@ def get_comments() -> list:
     """
 
     try:
+        global all_data
         return all_data['ndm']['oem']['body']['segment']['data']['COMMENT']
-    except KeyError:
-        return "Data is empty. Please re-post data using the post-data route."
+    except NameError:
+        return "Data is empty. Please re-post data using the post-data route.\n"
 
 @app.route('/header', methods = ['GET'])
 def get_header() -> dict:
@@ -285,11 +296,11 @@ def get_header() -> dict:
         dictionary of the headers within the XMl file.
         Or a string that indicates an error accessing the data. Likely a result from not re-posting the data after deletion.
     """
-
     try:
+        global all_data
         return all_data['ndm']['oem']['header']
-    except KeyError:
-        return "Data is empty. Please re-post data using the post-data route."
+    except NameError:
+        return "Data is empty. Please re-post data using the post-data route.\n"
 
 @app.route('/metadata', methods = ['GET'])
 def get_metadata() -> dict:
@@ -305,11 +316,11 @@ def get_metadata() -> dict:
         dictionary of the metadata within the XMl file.
         Or a string that indicates an error accessing the data. Likely a result from not re-posting the data after deletion.
     """
-
     try:
+        global all_data 
         return all_data['ndm']['oem']['body']['segment']['metadata']
-    except KeyError:
-        return "Data is empty. Please re-post data using the post-data route."
+    except NameError:
+        return "Data is empty. Please re-post data using the post-data route.\n"
 
 @app.route('/epochs/<epoch>/location', methods = ['GET'])
 def get_epoch_location(epoch) -> dict:
