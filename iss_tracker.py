@@ -357,8 +357,17 @@ def get_epoch_location(epoch) -> dict:
 
     altitude = math.sqrt(X**2 + Y**2 + Z**2) - MEAN_EARTH_RADIUS
 
+    if latitude > 180.0:
+        latitude -= 360.0
+    elif latitude < -180.0:
+        latitude += 360.0
+    if longitude > 180.0:
+        longitude -= 360.0
+    elif longitude < -180.0:
+        longitude += 360.0
+
     geocoder = Nominatim(user_agent = 'iss_tracker')
-    geoloc = geocoder.reverse((latitude,longitude), zoom = 10, language = 'en')
+    geoloc = geocoder.reverse((latitude,longitude), zoom = 15, language = 'en')
 
     try:
         return {'EPOCH':epochs['EPOCH'],'Latitude': latitude, 'Longitude': longitude, 'Altitude': altitude,'Geographic Location': geoloc.address}
@@ -392,28 +401,33 @@ def ISS_location_now() -> dict:
 
     MEAN_EARTH_RADIUS = 6371 #kilometers
 
-    EPOCH = epochs['EPOCH'] # time data is held in EPOCH key
+    EPOCH_time = closest_current_epoch['EPOCH'] # time data is held in EPOCH key
 
-    hours = float(EPOCH[9:11])
-    minutes = float(EPOCH[12:14])
+    hours = int(EPOCH_time[9]+EPOCH_time[10])
+    minutes = int(EPOCH_time[12]+EPOCH_time[13])
 
     latitude = math.degrees(math.atan2(Z, math.sqrt(X**2 + Y**2)))
     longitude = math.degrees(math.atan2(Y,X)) - ((hours-12) + (minutes/60))*(360/24) + 32
 
-    if (longitude <= 180 and longitude >= -180):
-        longitude = longitude
-    else:
-        longitude = -180+(longitude-180)
+    if latitude > 180.0:
+        latitude -= 360.0
+    elif latitude < -180.0:
+        latitude += 360.0
+    if longitude > 180.0:
+        longitude -= 360.0
+    elif longitude < -180.0:
+        longitude += 360.0
 
     altitude = math.sqrt(X**2 + Y**2 + Z**2) - MEAN_EARTH_RADIUS
 
     geocoder = Nominatim(user_agent = 'iss_tracker')
-    geoloc = geocoder.reverse((latitude,longitude), zoom = 5, language = 'en')
+    geoloc = geocoder.reverse((latitude,longitude), zoom = 15, language = 'en')
     
     try:
         return {"Closest Epoch":closest_current_epoch['EPOCH'],"Time from now": smallest_time_difference,"Location":{'Latitude':latitude, 'Longitude': longitude, 'Altitude':{"Value": altitude,"Units":"km"}}, "Geographic Location": geoloc.address, "Speed":{"Value":epoch_Speed,"Units":"m/s"} }    
     except AttributeError:
         return {"Closest Epoch":closest_current_epoch['EPOCH'],"Time from now": smallest_time_difference,"Location":{'Latitude':latitude, 'Longitude': longitude, 'Altitude':{"Value": altitude, "Units": "km"}, "Geographic Location": "ISS was/is over the ocean."}, "Speed": {"Value":epoch_Speed,"Units": "m/s"}}
-
+    except Error as e:
+        return f'GeoPy returned an erro - {e}'
 if __name__ == '__main__':
     app.run(debug =True, host = '0.0.0.0')
