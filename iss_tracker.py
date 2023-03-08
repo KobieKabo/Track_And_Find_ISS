@@ -2,6 +2,8 @@ from flask import Flask,request
 import requests
 import xmltodict
 import math
+import time
+import yaml 
 from geopy.geocoders import Nominatim
 
 app = Flask(__name__)
@@ -351,17 +353,67 @@ def get_epoch_location(epoch) -> dict:
     minutes = float(EPOCH[12:14])
 
     latitude = math.degrees(math.atan2(Z, math.sqrt(X**2 + Y**2)))
-    longitude = math.degrees(math.atan2(Y,X)) - ((hours-12) + (minutes/60))*(360/24) + 24
+    longitude = math.degrees(math.atan2(Y,X)) - ((hours-12) + (minutes/60))*(360/24) + 32
 
     altitude = math.sqrt(X**2 + Y**2 + Z**2) - MEAN_EARTH_RADIUS
 
     geocoder = Nominatim(user_agent = 'iss_tracker')
-    geoloc = geocoder.reverse((latitude,longitude), zoom = 5, language = 'en')
+    geoloc = geocoder.reverse((latitude,longitude), zoom = 10, language = 'en')
 
     try:
         return {'EPOCH':epochs['EPOCH'],'Latitude': latitude, 'Longitude': longitude, 'Altitude': altitude,'Geographic Location': geoloc.address}
     except AttributeError:
         return {'EPOCH':epochs['EPOCH'],'Latitude': latitude, 'Longitude': longitude, 'Altitude': altitude,'Geographic Location':"ISS was/is over the ocean."}
+
+@app.route('/now', methods = ['GET'])
+def ISS_location_now() -> dict:
+    """
+    """
+    
+    global data
+    smallest_time_difference = 1e10 # Ensures smallest difference is always larger initially
+
+    for epochs in data:
+        current_time = time.time() # gives presnt time in since unix epoch
+        epoch_time = time.mktime(time.strptime(epochs['EPOCH'][:-5],'%Y-%jT%H:%M:%S')) # gives epoch time in seconds since unix
+        time_difference = current_time - epoch_time
+        if time_difference < smallest_time_difference:
+            smallest_time_difference = time_difference
+            closest_current_epoch = epochs
+
+    X = float(closest_current_epoch['X']['#text'])
+    Y = float(closest_current_epoch['Y']['#text'])
+    Z = float(closest_current_epoch['Z']['#text'])
+
+    X_DOT = float(closest_current_epoch['X_DOT']['#text'])
+    Y_DOT = float(closest_current_epoch['Z_DOT']['#text'])
+    Z_DOT = float(closest_current_epoch['Z_DOT']['#text'])
+    epoch_Speed = math.sqrt(X_DOT**2 + Y_DOT**2 + Z_DOT**2)
+
+    MEAN_EARTH_RADIUS = 6371 #kilometers
+
+    EPOCH = epochs['EPOCH'] # time data is held in EPOCH key
+
+    hours = float(EPOCH[9:11])
+    minutes = float(EPOCH[12:14])
+
+    latitude = math.degrees(math.atan2(Z, math.sqrt(X**2 + Y**2)))
+    longitude = math.degrees(math.atan2(Y,X)) - ((hours-12) + (minutes/60))*(360/24) + 32
+
+    if (longitude <= 180 and longitude >= -180):
+        longitude = longitude
+    else:
+        longitude = -180+(longitude-180)
+
+    altitude = math.sqrt(X**2 + Y**2 + Z**2) - MEAN_EARTH_RADIUS
+
+    geocoder = Nominatim(user_agent = 'iss_tracker')
+    geoloc = geocoder.reverse((latitude,longitude), zoom = 5, language = 'en')
+    
+    try:
+        return {"Closest Epoch":closest_current_epoch['EPOCH'],"Time from now": smallest_time_difference,"Location":{'Latitude':latitude, 'Longitude': longitude, 'Altitude':{"Value": altitude,"Units":"km"}}, "Geographic Location": geoloc.address, "Speed":{"Value":epoch_Speed,"Units":"m/s"} }    
+    except AttributeError:
+        return {"Closest Epoch":closest_current_epoch['EPOCH'],"Time from now": smallest_time_difference,"Location":{'Latitude':latitude, 'Longitude': longitude, 'Altitude':{"Value": altitude, "Units": "km"}, "Geographic Location": "ISS was/is over the ocean."}, "Speed": {"Value":epoch_Speed,"Units": "m/s"}}
 
 if __name__ == '__main__':
     app.run(debug =True, host = '0.0.0.0')
