@@ -69,6 +69,13 @@ kobiekabo/iss_tracker   1.0       1932e3be3921   2 hours ago     897MB
 Now, regardless of the method used it's time to run the image!
 This is done with either of the following commands:
 ```
+docker compose-up
+...
+Starting track_and_find_iss_flask-app_1 ... done
+Attaching to track_and_find_iss_flask-app_1
+flask-app_1  |  * Serving Flask app 'iss_tracker'
+```
+```
 docker run -it --rm -p 5000:5000 <yourdockerusername>/<fileName>:<version>
 ```
 if you're using the image I've created then the command looks like:
