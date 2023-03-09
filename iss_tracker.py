@@ -368,11 +368,15 @@ def get_epoch_location(epoch) -> dict:
 
     geocoder = Nominatim(user_agent = 'iss_tracker')
     geoloc = geocoder.reverse((latitude,longitude), zoom = 15, language = 'en')
-
+    
     try:
-        return {'EPOCH':epochs['EPOCH'],'Latitude': latitude, 'Longitude': longitude, 'Altitude': altitude,'Geographic Location': geoloc.address}
+        geoLocation = [i for i in geoloc.raw.values()][7]
     except AttributeError:
-        return {'EPOCH':epochs['EPOCH'],'Latitude': latitude, 'Longitude': longitude, 'Altitude': altitude,'Geographic Location':"ISS was/is over the ocean."}
+        geoLocation = 'ISS tracker location is unknown, or over an ocean.'
+
+    location = {'EPOCH':epochs['EPOCH'],'Latitude': latitude, 'Longitude': longitude, 'Altitude': altitude,'Geographic Location': geoLocation}
+
+    return location
 
 @app.route('/now', methods = ['GET'])
 def ISS_location_now() -> dict:
@@ -385,7 +389,7 @@ def ISS_location_now() -> dict:
     for epochs in data:
         current_time = time.time() # gives presnt time in since unix epoch
         epoch_time = time.mktime(time.strptime(epochs['EPOCH'][:-5],'%Y-%jT%H:%M:%S')) # gives epoch time in seconds since unix
-        time_difference = current_time - epoch_time
+        time_difference = abs(current_time - epoch_time)
         if time_difference < smallest_time_difference:
             smallest_time_difference = time_difference
             closest_current_epoch = epochs
@@ -422,12 +426,15 @@ def ISS_location_now() -> dict:
 
     geocoder = Nominatim(user_agent = 'iss_tracker')
     geoloc = geocoder.reverse((latitude,longitude), zoom = 15, language = 'en')
-    
+   
     try:
-        return {"Closest Epoch":closest_current_epoch['EPOCH'],"Time from now": smallest_time_difference,"Location":{'Latitude':latitude, 'Longitude': longitude, 'Altitude':{"Value": altitude,"Units":"km"}}, "Geographic Location": geoloc.address, "Speed":{"Value":epoch_Speed,"Units":"m/s"} }    
+        geoLocation = [i for i in geoloc.raw.values()][7]
     except AttributeError:
-        return {"Closest Epoch":closest_current_epoch['EPOCH'],"Time from now": smallest_time_difference,"Location":{'Latitude':latitude, 'Longitude': longitude, 'Altitude':{"Value": altitude, "Units": "km"}, "Geographic Location": "ISS was/is over the ocean."}, "Speed": {"Value":epoch_Speed,"Units": "m/s"}}
-    except Error as e:
-        return f'GeoPy returned an erro - {e}'
+        geoLocation = 'ISS tracker location is unknown, or over an ocean.'
+
+    location = {"Closest Epoch":closest_current_epoch['EPOCH'],"Time from now": smallest_time_difference,"Location":{'Latitude':latitude, 'Longitude': longitude, 'Altitude':{"Value": altitude,"Units":"km"}}, "Geographic Location": geoLocation, "Speed":{"Value":epoch_Speed,"Units":"m/s"} }
+    
+    return location
+    
 if __name__ == '__main__':
     app.run(debug =True, host = '0.0.0.0')
