@@ -67,7 +67,7 @@ kobiekabo/iss_tracker   1.0       1932e3be3921   2 hours ago     897MB
 ...
 ```
 Now, regardless of the method used it's time to run the image!
-This is done with the following command:
+This is done with either of the following commands:
 ```
 docker run -it --rm -p 5000:5000 <yourdockerusername>/<fileName>:<version>
 ```
