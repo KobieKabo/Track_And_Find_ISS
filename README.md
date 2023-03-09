@@ -21,6 +21,7 @@ Depending on the route used different information is returned.
 | ------------- |:-------------:| 
 | `/`     | the full data set | 
 | `/epochs`       | all epochs in the data set      |
+| `/epochs?limit=<int>&offset=<int>`       | all epochs within the specified paramters      |
 | `/epochs/<epoch>`  | the data (state vectors) associated with the specified epoch      |
 | `/epochs/<epoch>/position`  | the positional coordinates of the specified epoch     |
 | `/epochs/<epoch>/speed`  | the speed of the specified epoch      |
