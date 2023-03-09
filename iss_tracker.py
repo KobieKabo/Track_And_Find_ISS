@@ -60,7 +60,7 @@ def help_function() -> str:
     Returns:
         help_statements (str) : short explanation of all of the functions & routes.
     """
-    function_list = ['help_function','get_nasa_data','get_All_Data','epochs_Only','get_Epoch_Entry','get_Epoch_Position','get_Epoch_Speed','delete_nasa_data','post_nasa_data','get_comments','get_header','get_metadata','get_epoch_location']
+    function_list = ['help_function','get_nasa_data','get_All_Data','epochs_Only','get_Epoch_Entry','get_Epoch_Position','get_Epoch_Speed','delete_nasa_data','post_nasa_data','get_comments','get_header','get_metadata','get_epoch_location','ISS_location_now']
 
     help_statements = '\nRoute & Function definitions for the flask app:\n'
 
@@ -381,6 +381,13 @@ def get_epoch_location(epoch) -> dict:
 @app.route('/now', methods = ['GET'])
 def ISS_location_now() -> dict:
     """
+    Returns the current location of the ISS along with it's geographical positon, speed, & closest current epoch.
+
+    Args:
+        None.
+
+    Returns:
+        location (dict): Contains the closest epoch to current time relevant to the current ISS position.
     """
     
     global data
