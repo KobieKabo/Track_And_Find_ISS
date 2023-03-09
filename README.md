@@ -234,3 +234,42 @@ curl -X POST 127.0.0.1:5000/post-data
 ...
 Data has been updated.
 ```
+Route Eight: `/comment`
+```
+curl 127.0.0.1:5000/comment
+...
+[
+  "Units are in kg and m^2",
+  "MASS=473291.00",
+  "DRAG_AREA=1421.50",
+  "DRAG_COEFF=2.80",
+  "SOLAR_RAD_AREA=0.00",
+  "SOLAR_RAD_COEFF=0.00",
+]
+```
+Route Nine: `/metadata`
+```
+curl 127.0.0.1:5000/metadata
+...
+{
+  "CENTER_NAME": "EARTH",
+  "OBJECT_ID": "1998-067-A",
+  "OBJECT_NAME": "ISS",
+  "REF_FRAME": "EME2000",
+  "START_TIME": "2023-067T12:00:00.000Z",
+  "STOP_TIME": "2023-082T12:00:00.000Z",
+  "TIME_SYSTEM": "UTC"
+}
+```
+Route Ten: `/header`
+```
+curl 127.0.0.1:5000/header
+...
+{
+  "CREATION_DATE": "2023-067T21:02:49.080Z",
+  "ORIGINATOR": "JSC"
+}
+```
+Route Eleven: `/now`
+
+Route Twelve: `/epochs/<epoch>/location`
