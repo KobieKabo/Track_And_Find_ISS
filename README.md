@@ -5,7 +5,7 @@ This project was to develop a Flask-web based application that provides the user
 contains its position, and speed at different points and time. In addition, we were required to create a working docker container that can be used to ensure our application works in any enviroment by having the correct versions of modules & packages in use. 
 
 #### Project Objective:
-The purpose of this project was to become more familiar with Flask application development & the use of the DELETE method. In addition we also became more familiar with the creation of docker images, and pulling and pushing docker images.
+The purpose of this project was to become more familiar with Flask application development & the use of the DELETE method. In addition we also became more familiar with the creation of docker images, and pulling and pushing docker images. Additionally, with ensuring that docker-compose can be used to run our image & flask application.
 
 ### Data:
 The data used was sourced from: https://nasa-public-data.s3.amazonaws.com/iss-coords/current/ISS_OEM/ISS.OEM_J2K_EPH.xml
