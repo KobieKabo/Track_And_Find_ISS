@@ -1,4 +1,4 @@
-# Homework 5: "Undone: The Sweater Container"
+# MidTerm Project: "Oh ISS Where Art Thou?"
 
 ### Project Description:
 This project was to develop a Flask-web based application that provides the user with current information about the International Space Station(ISS). This information
@@ -26,6 +26,11 @@ Depending on the route used different information is returned.
 | `/epochs/<epoch>/speed`  | the speed of the specified epoch      |
 | `/delete-data` | deletes the data & renders the other routes useless |
 | `/post-data` | re-inserts the data from the URL above & allows the other routes to be used again |
+|`/epochs/<epoch>/location`| Returns the position of the ISS at the specified epoch|
+|`/now`| Returns the closest epoch & the ISS position, closest to the current time|
+|`/metadata`| Returns the metadata information | 
+|`/header`| Returns the header informatiom|
+|`/comment`| Returns the comments information |
 
 Where `<epoch>` is any integer value. If a non-integer is used, you'll receive an error message.
 
