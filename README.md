@@ -42,11 +42,11 @@ To use the image that I've already created you simply need to pull the docker fi
 As such you'll need to do the following:
 
 ```
-docker pull kobiekabo/iss_tracker:1.0
+docker pull kobiekabo/iss_tracker_midterm:1.0
 ...
 ...
 ...
-docker run -it --rm -p 5000:5000 kobiekabo/iss_tracker:1.0
+docker run -it --rm -p 5000:5000 kobiekabo/iss_tracker_midterm:1.0
 ```
 Doing it this way constructs the image & allows the docker image to be run, which will immediately start the flask application.
 
@@ -73,7 +73,7 @@ docker run -it --rm -p 5000:5000 <yourdockerusername>/<fileName>:<version>
 ```
 if you're using the image I've created then the command looks like:
 ```
-docker run -it --rm -p 5000:5000 kobiekabo/iss_tracker:1.0
+docker run -it --rm -p 5000:5000 kobiekabo/iss_tracker_midterm:1.0
 ```
 This starts the flask application, and queries are now accessible using the API.
 
