@@ -271,5 +271,36 @@ curl 127.0.0.1:5000/header
 }
 ```
 Route Eleven: `/now`
-
+```
+curl 127.0.0.1:5000/header
+...
+{
+  "Closest Epoch": "2023-068T17:44:17.828Z",
+  "Geographic Location": "ISS tracker location is unknown, or over an ocean.",
+  "Location": {
+    "Altitude": {
+      "Units": "km",
+      "Value": 434.70558212727065
+    },
+    "Latitude": -43.235597048295304,
+    "Longitude": -85.2980135135594
+  },
+  "Speed": {
+    "Units": "m/s",
+    "Value": 4.278238914588808
+  },
+  "Time from now": 117.4630274772644
+}
+```
 Route Twelve: `/epochs/<epoch>/location`
+```
+curl 127.0.0.1:5000/epochs/1/location
+...
+{
+  "Altitude": 429.3442509558208,
+  "EPOCH": "2023-067T12:04:00.000Z",
+  "Geographic Location": "ISS tracker location is unknown, or over an ocean.",
+  "Latitude": -1.0973848786588927,
+  "Longitude": -41.17495128033903
+}
+```
